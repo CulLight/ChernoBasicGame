@@ -5,13 +5,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
+
+import com.CulLight.BasicGame.graphics.Screen;
 
 
 public class Game extends Canvas implements Runnable{
 	//canvas to draw on
 	private static final long serialVersionUID = 1L;
+	
+	
+	
 	
 	//FIELDS
 	
@@ -23,14 +30,30 @@ public class Game extends Canvas implements Runnable{
 	private JFrame frame;
 	private boolean bRunning = false;
 	
+	//final rendered view
+	//alpha is transparency but dont need that here
+	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+	//get color of each pixel
+	//if we set pixels to sth new, the pixels within image get automaticelly updated
+	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+	private Screen screen;
+			
+	
+	
+	
 	//CONSTRUCTOR
 	
 	public Game() {
 		Dimension size = new Dimension(width * scale, height * scale);
 		setPreferredSize(size); //inherited canvas method
 		
+		screen = new Screen(width, height);
+		
 		frame = new JFrame();
 	}
+	
+	
+	
 	
 	//METHODS
 		
@@ -96,10 +119,20 @@ public class Game extends Canvas implements Runnable{
 			createBufferStrategy(3);
 			return;
 		}
+		//black out screen
+		screen.clear();
+		screen.render();
+		for (int i = 0; i < pixels.length; i++) {
+			pixels[i] = screen.pixels[i];
+		}
 		
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		//image gets scaled (images is 300 x 300/16*9)
+		// but Frame size is 3*300 x 3*300/16*9
+		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		g.dispose();
 		
 		bs.show();
