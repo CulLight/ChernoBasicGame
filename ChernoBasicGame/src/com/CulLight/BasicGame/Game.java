@@ -113,7 +113,7 @@ public class Game extends Canvas implements Runnable{
 			delta += (nowTime - lastTime) / ns;
 			lastTime = nowTime;
 			//update only every 1/60s = 16 ms
-			if (delta >= 1) {
+			while (delta >= 1) {
 				update();
 				delta--;
 //				System.out.println(delta);
