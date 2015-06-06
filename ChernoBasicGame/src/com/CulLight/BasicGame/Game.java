@@ -26,6 +26,7 @@ public class Game extends Canvas implements Runnable{
 	public static int height = width / 16 * 9;
 	public static int scale = 3;
 	
+	public static String title = "ChernoGame";
 	private Thread thread;
 	private JFrame frame;
 	private boolean bRunning = false;
@@ -60,7 +61,7 @@ public class Game extends Canvas implements Runnable{
 	public static void main(String[] args) {
 		Game game = new Game();
 		game.frame.setResizable(false);
-		game.frame.setTitle("ChernoGame");
+		game.frame.setTitle(title);
 		//add content to our frame (possible because we are subclass of canvas
 		game.frame.add(game);
 		// set the size of the window
@@ -97,10 +98,39 @@ public class Game extends Canvas implements Runnable{
 
 
 	public void run() {
+		long lastTime = System.nanoTime();
+		// need timer to measure one second
+		long timer = System.currentTimeMillis();
+		// 1/60th of a second
+		final double ns = 1000000000.0 / 60.;
+		double delta = 0;
+		int frames = 0;
+		// updates should be 60 times every secod
+		int updates = 0;
+		
 		while (bRunning) {
-			update();
+			long nowTime = System.nanoTime();
+			delta += (nowTime - lastTime) / ns;
+			lastTime = nowTime;
+			//update only every 1/60s = 16 ms
+			if (delta >= 1) {
+				update();
+				delta--;
+//				System.out.println(delta);
+				updates++;
+			}
 			render();
+			frames++;
+			
+			// do every 1 second
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				frame.setTitle(title + " |  " + updates + " ups, " + frames + " fps");
+				updates = 0;
+				frames = 0;
+			}
 		}
+		stop();
 	}
 	
 	public void update() {
