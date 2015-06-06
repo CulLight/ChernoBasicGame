@@ -2,6 +2,7 @@ package com.CulLight.BasicGame;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
@@ -43,7 +44,7 @@ public class Game extends Canvas implements Runnable{
 		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//center window
 		game.frame.setLocationRelativeTo(null);
-		game.setVisible(true);
+		game.frame.setVisible(true);
 		
 		game.start();
 	}
@@ -72,9 +73,28 @@ public class Game extends Canvas implements Runnable{
 
 	public void run() {
 		while (bRunning) {
+			update();
+			render();
 		}
 	}
 	
+	public void update() {
+		
+	}
+	
+	public void render() {
+		//we dont want to render image live (as fast possible)
+		//therefore we need to store the new frame somewhere -> buffer
+		BufferStrategy bs = getBufferStrategy(); //retrieves BufferStrategy from canvas
+		if (bs == null) { 
+			// why 3
+			// 2: would have only two buffers, which would be frame storage place and the screen it will be displayed
+			// 3: have two frame storage places -> speed improvement
+			// because we can work on new frame, before frame in buffer storage 1 is displayed on screen
+			createBufferStrategy(3);
+			return;
+		}
+	}
 	
 	
 }
