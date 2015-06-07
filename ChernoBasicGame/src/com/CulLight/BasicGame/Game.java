@@ -11,6 +11,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import com.CulLight.BasicGame.graphics.Screen;
+import com.CulLight.BasicGame.input.Keyboard;
 
 
 public class Game extends Canvas implements Runnable{
@@ -33,11 +34,13 @@ public class Game extends Canvas implements Runnable{
 	
 	//final rendered view
 	//alpha is transparency but dont need that here
+	//Graphics g will draw this image
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	//get color of each pixel
 	//if we set pixels to sth new, the pixels within image get automaticelly updated
 	private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 	private Screen screen;
+	private Keyboard keyboard;
 			
 	
 	
@@ -48,9 +51,11 @@ public class Game extends Canvas implements Runnable{
 		Dimension size = new Dimension(width * scale, height * scale);
 		setPreferredSize(size); //inherited canvas method
 		
-		screen = new Screen(width, height);
-		
+		screen = new Screen(width, height);	
 		frame = new JFrame();
+		
+		keyboard = new Keyboard();
+		addKeyListener(keyboard);
 	}
 	
 	
@@ -71,6 +76,10 @@ public class Game extends Canvas implements Runnable{
 		//center window
 		game.frame.setLocationRelativeTo(null);
 		game.frame.setVisible(true);
+		
+//		game.frame.setFocusable(true);
+//		game.frame.toFront();
+//		game.frame.requestFocus();
 		
 		game.start();
 	}
@@ -132,9 +141,13 @@ public class Game extends Canvas implements Runnable{
 		}
 		stop();
 	}
-	
+	int x = 0, y = 0;
 	public void update() {
-		
+		keyboard.update();
+		if (keyboard.up) y--;
+		if (keyboard.down) y++;
+		if (keyboard.right) x++;
+		if (keyboard.left) x--;
 	}
 	
 	public void render() {
@@ -151,7 +164,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		//black out screen
 		screen.clear();
-		screen.render();
+		screen.render(x, y);
 		for (int i = 0; i < pixels.length; i++) {
 			pixels[i] = screen.pixels[i];
 		}
