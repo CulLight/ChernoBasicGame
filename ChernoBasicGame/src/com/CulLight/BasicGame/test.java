@@ -6,7 +6,8 @@ public class test {
 
 
 		for (int i = 0; i < 19; i++) {
-			System.out.println(Integer.toBinaryString(i) + "   " + (i & 8));
+			if (i == 3) continue;
+			System.out.println(i);
 		}
 	}
 

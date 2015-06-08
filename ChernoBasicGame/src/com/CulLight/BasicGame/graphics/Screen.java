@@ -29,20 +29,19 @@ public class Screen {
 	public void clear() {
 		// blank screen
 		for (int i = 0; i < pixels.length; i++) {
-			pixels[i] = 0;
+			pixels[i] = 0; 
 		}
 	}
 	
 	public void render(int xOffset, int yOffset) {
 		for (int y = 0; y < height; y++) {
-			int yy = y + yOffset;
-//			if (yy < 0 || yy >= height) break;
+			int yp = y + yOffset;
+			if (yp < 0 || yp >= height) continue; //jump to next for loop
 			for (int x = 0; x < width; x++) {
-				int xx = x + xOffset; 
-//				if (xx < 0 || xx >= width) break;
+				int xp = x + xOffset;
+				if (xp < 0 || xp >= width) continue;
 				//speed up by not dividing by 16 but use bitshift
-				int tileIndex = ((xx >> 4) & MAP_SIZE_MASK) + ((yy >> 4) & MAP_SIZE_MASK) * MAP_SIZE;
-				pixels[x + y * width] = tiles[tileIndex];
+				pixels[xp + yp * width] = Sprite.grass.pixels[(x & 15) + (y & 15) * Sprite.grass.SIZE];
 			}
 		}
 	}

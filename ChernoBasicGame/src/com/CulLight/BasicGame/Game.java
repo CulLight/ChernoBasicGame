@@ -53,7 +53,7 @@ public class Game extends Canvas implements Runnable{
 		
 		screen = new Screen(width, height);	
 		frame = new JFrame();
-		
+
 		keyboard = new Keyboard();
 		addKeyListener(keyboard);
 	}
@@ -76,11 +76,7 @@ public class Game extends Canvas implements Runnable{
 		//center window
 		game.frame.setLocationRelativeTo(null);
 		game.frame.setVisible(true);
-		
-//		game.frame.setFocusable(true);
-//		game.frame.toFront();
-//		game.frame.requestFocus();
-		
+
 		game.start();
 	}
 	
@@ -114,9 +110,10 @@ public class Game extends Canvas implements Runnable{
 		final double ns = 1000000000.0 / 60.;
 		double delta = 0;
 		int frames = 0;
-		// updates should be 60 times every secod
+		// updates should be 60 times every second
 		int updates = 0;
-		
+		//canvas needs to request focus, such that arrow keys work immediately
+		requestFocus();
 		while (bRunning) {
 			long nowTime = System.nanoTime();
 			delta += (nowTime - lastTime) / ns;
